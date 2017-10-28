@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-# Create your models here.
 class Nutrient(models.Model):
     kcal = models.IntegerField(default=0)
     fat = models.FloatField(default=0)
@@ -34,27 +33,30 @@ class Nutrient(models.Model):
         return self
 
 
+class Ingredient(models.Model):
+    name = models.CharField(max_length=256, default='')
+    amount = models.FloatField()
+    nutrients = models.ForeignKey(Nutrient, blank=True)
+
+    def __str__(self):
+        return f'{self.name} - {self.amount} g'
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        if self.nutrients_id is None:
+            from nutritrack import nut_api
+            self.nutrients = nut_api.load_nutrition_data(f'{self.amount} g {self.name}')
+            self.nutrients_id = self.nutrients.id
+        super().save(force_insert, force_update, using, update_fields)
+
+
 class Meal(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256, default='')
     description = models.TextField(default='')
-
-    @property
-    def ingredients(self):
-        return Ingredient.objects.filter(meal=self)
+    ingredients = models.ManyToManyField(Ingredient)
 
     def __str__(self):
         return self.name
-
-
-class Ingredient(models.Model):
-    meal = models.ForeignKey(Meal, on_delete=models.CASCADE)
-    name = models.CharField(max_length=256, default='')
-    amount = models.FloatField()
-    nutrients = models.ForeignKey(Nutrient)
-
-    def __str__(self):
-        return f'{self.name} - {self.amount} g'
 
 
 class MealReport(models.Model):
