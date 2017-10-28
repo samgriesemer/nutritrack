@@ -22,7 +22,9 @@ from nutritrack import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^nutritrack/$', views.index, name='index'),
+    url(r'^nutritrack/report/$', views.report, name='report'),
     url(r'^$', views.splash, name='splash'),
     url(r'^accounts/login/$', login, name='login'),
     url(r'^accounts/logout/$', logout, name='logout'),
+    url(r'^accounts/profile/$', views.profile, name='profile'),
 ]
