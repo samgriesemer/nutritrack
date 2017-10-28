@@ -15,10 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.views import login, logout
 
 from nutritrack import views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^nutritrack/', views.index, name='index')
+    url(r'^nutritrack/$', views.index, name='index'),
+    url(r'^$', views.splash, name='splash'),
+    url(r'^accounts/login/$', login, name='login'),
+    url(r'^accounts/logout/$', logout, name='logout'),
 ]
