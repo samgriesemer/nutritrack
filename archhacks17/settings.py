@@ -25,7 +25,7 @@ SECRET_KEY = 'so1nnruvi*o)63mai1pidcm-_(hs3mvpxoc4g-hcm%inxlj7er'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ah.connor.money']
 
 
 # Application definition
@@ -54,7 +54,7 @@ ROOT_URLCONF = 'archhacks17.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

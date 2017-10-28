@@ -16,6 +16,9 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from nutritrack import views
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^nutritrack/', views.index, name='index')
 ]
