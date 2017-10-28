@@ -3,17 +3,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>NutriTrack Dashboard</title>
+    <title>NutriTrack Meals</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Palanquin" rel="stylesheet">
     <style type="text/css">
       body {
-        font-family: 'Palanquin';
-        padding-top: 40px;
+        padding-top: 60px;
         padding-bottom: 40px;
       }
       .sidebar-nav {
@@ -64,50 +62,17 @@
       </div>
     </div>
 
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">This Week's Nutrition Intake</li>
-                <li>Kcal: {{  nut.kcal }}</li>
-                <li>Total fat: {{ nut.fat }} g</li>
-                <li>Total carbohydrates: {{ nut.carb }} g</li>
-                <li>-of which sugars: {{ nut.sugar }} g</li>
-                <li>Total sodium: {{ nut.sodium }} mg</li>
-                <li>Vitamin A: {{ nut.vA }}%</li>
-                <li>Vitamin C: {{ nut.vC }}%</li>
-                <li>Iron: {{ nut.iron }}%</li>
-                <li>Calcium: {{ nut.calcium }}%</li>
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-        <div class="span9">
-          <div class="hero-unit">
-            <h1>Welcome to your dashboard!</h1>
-            <p>This is where you can manage meals, see your nutrient intake, and explore new recipes to help balance your diet.</p>
-            <p><a href="#" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
-          </div>
-          <div class="row-fluid">
-            <div class="span4">
-              <h2>Record a Meal</h2>
-              <p>Track your nutritional progress simply by uploading a picture of your next meal!</p>
-              <p><a class="btn" href="{% url 'report' %}">Upload &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Calorie Intake</h2>
-              <svg id="calorie"></svg>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Protein Intake</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-            </div><!--/span-->
-          </div><!--/row-->
-          <div class="row-fluid">
-            <p>a fluid row</p>
-          </div><!--/row-->
-        </div><!--/span-->
-      </div><!--/row-->
+    <div class="container">
+
+      <h1>Your Meals</h1>
+
+        <ul>
+        {% for meal in meals %}
+            <li>{{ meal.name }}</li>
+        {% endfor %}
+        </ul>
+
+    </div> <!-- /container -->
 
       <hr>
 
@@ -122,9 +87,6 @@
       integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
       crossorigin="anonymous"></script>
     <script src="{% static "js/bootstrap.min.js" %}"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="{% static "js/line.js" %}"></script>
 
   </body>
 </html>
