@@ -1,5 +1,5 @@
 var margin = {top: 30, right: 30, bottom: 30, left: 30},
-    width = d3.max([300,window.innerWidth/4]) - margin.left - margin.right,
+    width = d3.max([200,window.innerWidth/4]) - margin.left - margin.right,
     height = 200 - margin.top - margin.bottom,
     full_width = width + margin.left + margin.right,
     full_height = height + margin.top + margin.bottom;
