@@ -4,16 +4,16 @@ from django.db import models
 
 # Create your models here.
 class Nutrient(models.Model):
-    kcal = models.IntegerField()
-    fat = models.FloatField()
-    carb = models.FloatField()
-    sugar = models.FloatField()
-    protein = models.FloatField()
-    sodium = models.FloatField()
-    vA = models.FloatField()
-    vC = models.FloatField()
-    iron = models.FloatField()
-    calcium = models.FloatField()
+    kcal = models.IntegerField(default=0)
+    fat = models.FloatField(default=0)
+    carb = models.FloatField(default=0)
+    sugar = models.FloatField(default=0)
+    protein = models.FloatField(default=0)
+    sodium = models.FloatField(default=0)
+    vA = models.FloatField(default=0)
+    vC = models.FloatField(default=0)
+    iron = models.FloatField(default=0)
+    calcium = models.FloatField(default=0)
 
     def __str__(self):
         return f'{self.kcal} kcal, {self.fat} g total fat, {self.carb} g total carbohydrate, {self.sugar} g sugars, ' \

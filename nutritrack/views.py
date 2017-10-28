@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from nutritrack import predict
+from nutritrack import predict, nut_api
 from nutritrack.forms import UploadFileForm
 from nutritrack.models import MealReport, Nutrient, Ingredient, Meal
 
@@ -46,9 +46,15 @@ def report(request):
                     destination.write(chunk)
             opencvImage = cv2.imread('/tmp/image' + image.name)
             pred = predict.client.predict_image(opencvImage)
-            m, _ = Meal.objects.get_or_create(name=pred['prediction']['label'])
+            label = pred['prediction']['label']
+            m, new = Meal.objects.get_or_create(name=label)
+            if new:
+                nut = nut_api.load_nutrition_data(label)
+                i = Ingredient(meal=m, name=label, amount=1, nutrients=nut)
+                i.save()
             mr = MealReport(user=request.user, meal=m)
             mr.save()
+
             # return render(request, 'nutritrack/form.html', {'form': pred})
             return redirect('/nutritrack/meals/')
     else:
