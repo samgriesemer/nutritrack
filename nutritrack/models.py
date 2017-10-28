@@ -37,6 +37,7 @@ class Nutrient(models.Model):
 class Meal(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=256, default='')
+    description = models.TextField(default='')
 
     @property
     def ingredients(self):
@@ -63,3 +64,4 @@ class MealReport(models.Model):
 
     def __str__(self):
         return f'{self.timestamp} - {self.user.username} - {self.meal.name}'
+
