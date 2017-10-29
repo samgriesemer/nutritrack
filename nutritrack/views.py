@@ -29,10 +29,9 @@ def index(request):
     nut.calcium = 0
     mr = MealReport.objects.filter(user=request.user, timestamp__gte=datetime.datetime.now().date())
     for r in list(mr):
-        for i in r.meal.ingredients.all():
-            n = i.nutrients
-            n *= (r.amount / r.meal.servings)
-            nut += n
+        n = r.meal.nutrients
+        n *= (r.amount / r.meal.servings)
+        nut += n
     ratio = request.user.profile.bmr / 2000
     nut.vA /= ratio
     nut.vC /= ratio
@@ -42,9 +41,7 @@ def index(request):
     meals = [mr.meal for mr in MealReport.objects.filter(user=request.user)]
     mrs = list(MealReport.objects.filter(user=request.user))
     for mmm in mrs:
-      mmm.meal.nut = Nutrient()
-      for inc in mmm.meal.ingredients.all():
-        mmm.meal.nut += inc.nutrients
+      mmm.meal.nut = mmm.meal.nutrients
     return render(request, 'nutritrack/index.html', {'user': request.user, 'nut': nut,
                                                      'mrs': mrs})
 
@@ -62,13 +59,15 @@ def report(request):
             query = label
             if label == 'pizza':
                 query = '3 slices of pizza'
-            m, new = Meal.objects.get_or_create(name=label)
-            if new:
+            if not Meal.objects.filter(name=label).exists():
                 nut = nut_api.load_nutrition_data(query)
-                i = Ingredient(name=label, amount=1, nutrients=nut)
+                m, new = Meal.objects.get_or_create(name=label, nutrients=nut)
+                i = Ingredient(name=label, amount=1)
                 i.save()
                 m.ingredients.add(i)
                 m.save()
+            else:
+                m = Meal.objects.get(name=label)
             mr = MealReport(user=request.user, meal=m)
             mr.save()
             return redirect('/nutritrack/meals/')
@@ -106,7 +105,8 @@ def profile(request):
             request.user.profile.activity_level = form.cleaned_data['activity_level']
             request.user.save()
             messages.info(request, 'Your information has been saved.')
-            return render(request, 'registration/profile.html', {'profile': request.user.profile, 'form': form})
+            return redirect('/nutritrack/')
+            # return render(request, 'registration/profile.html', {'profile': request.user.profile, 'form': form})
     else:
         form = ProfileForm()
     return render(request, 'registration/profile.html', {'profile': request.user.profile, 'form': form})
@@ -124,7 +124,7 @@ def recipe(request, recipe_id):
     inc = list(r.ingredients.all())
     total_price = 0
     package = 0
-    tkcal = 0
+    tkcal = r.nutrients.kcal
     for i in inc:
         p = prices.get_price(i.name)
         if p is None:
@@ -133,7 +133,7 @@ def recipe(request, recipe_id):
             total_price += p["unit"] * i.amount
             package += p["package"]
             i.price = f'${(p["unit"] * i.amount):.2f} - ${(p["package"]):.2f} per package (Walmart)'
-        tkcal += i.nutrients.kcal
+        # tkcal += i.nutrients.kcal
     return render(request, 'nutritrack/recipe.html', {'recipe': r, 'ingredients': inc, 'unit': total_price,
                                                       'pps': total_price / r.servings, 'package': package, 'tkcal': tkcal/r.servings})
 

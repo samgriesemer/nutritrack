@@ -8,21 +8,30 @@ from django.utils import timezone
 
 
 def import_recipe(recipe):
-    meal, created = Meal.objects.get_or_create(name=recipe['recipe']['label'])
-    if created:
+    if not Meal.objects.filter(name=recipe['recipe']['label']).exists():
         print(f"Importing {recipe['recipe']['label']}")
+        nut = Nutrient()
+        nut.kcal = recipe['recipe']['totalNutrients']['ENERC_KCAL']['quantity'] if 'ENERC_KCAL' in recipe['recipe']['totalNutrients'] else 0
+        nut.fat = recipe['recipe']['totalNutrients']['FAT']['quantity'] if 'FAT' in recipe['recipe']['totalNutrients'] else 0
+        nut.carb = recipe['recipe']['totalNutrients']['CHOCDF']['quantity'] if 'CHOCDF' in recipe['recipe']['totalNutrients'] else 0
+        nut.sugar = recipe['recipe']['totalNutrients']['SUGAR']['quantity'] if 'SUGAR' in recipe['recipe']['totalNutrients'] else 0
+        nut.protein = recipe['recipe']['totalNutrients']['PROCNT']['quantity'] if 'PROCNT' in recipe['recipe']['totalNutrients'] else 0
+        nut.sodium = recipe['recipe']['totalNutrients']['NA']['quantity'] if 'NA' in recipe['recipe']['totalNutrients'] else 0
+        nut.vA = recipe['recipe']['totalNutrients']['VITA_RAE']['quantity'] if 'VITA_RAE' in recipe['recipe']['totalNutrients'] else 0
+        nut.vB = recipe['recipe']['totalNutrients']['VITC']['quantity'] if 'VITC' in recipe['recipe']['totalNutrients'] else 0
+        nut.iron = recipe['recipe']['totalNutrients']['FE']['quantity'] if 'FE' in recipe['recipe']['totalNutrients'] else 0
+        nut.calcium = recipe['recipe']['totalNutrients']['CA']['quantity'] if 'CA' in recipe['recipe']['totalNutrients'] else 0
+        nut.save()
+        meal, new = Meal.objects.get_or_create(name=recipe['recipe']['label'], nutrients=nut)
         meal.description = f"<a href='{recipe['recipe']['url']}'>{recipe['recipe']['label']}</a>"
         meal.servings = recipe['recipe']['yield']
         for ing in recipe['recipe']['ingredients']:
-            nut = nut_api.load_nutrition_data(f"{ing['weight']} g {ing['text']}")
-            if nut is None:
-                print("WARN nut-api is none")
-                nut = Nutrient()
-                nut.save()
-            inc = Ingredient(name=ing['text'], amount=ing['weight'], nutrients=nut)
+            inc = Ingredient(name=ing['text'], amount=ing['weight'])
             inc.save()
             meal.ingredients.add(inc)
         meal.save()
+    else:
+        meal = Meal.objects.get(name=recipe['recipe']['label'])
     return meal
 
 
@@ -107,10 +116,8 @@ def get_best_recipe(user):
     nut.iron = 0
     nut.calcium = 0
     mr = MealReport.objects.filter(user=user, timestamp__gte=datetime.datetime.now().date())
-    for r in list(mr):
-        for i in r.meal.ingredients.all():
-            n = i.nutrients
-            nut += n
+    for r in mr:
+        nut += r.meal.nutrients
 
     # space out nutrients depending on which meal this is
     hour = timezone.now().hour

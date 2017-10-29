@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 class Nutrient(models.Model):
     kcal = models.IntegerField(default=0)
     fat = models.FloatField(default=0)
@@ -62,17 +63,9 @@ class Nutrient(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(max_length=256, default='')
     amount = models.FloatField()
-    nutrients = models.ForeignKey(Nutrient, blank=True)
 
     def __str__(self):
         return f'{self.name} - {self.amount} g'
-
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
-        if self.nutrients_id is None:
-            from nutritrack import nut_api
-            self.nutrients = nut_api.load_nutrition_data(f'{self.amount} g {self.name}')
-            self.nutrients_id = self.nutrients.id
-        super().save(force_insert, force_update, using, update_fields)
 
 
 class Meal(models.Model):
@@ -81,6 +74,7 @@ class Meal(models.Model):
     description = models.TextField(default='')
     ingredients = models.ManyToManyField(Ingredient)
     servings = models.FloatField(default=1)
+    nutrients = models.ForeignKey(Nutrient, blank=True, default=None)
 
     def __str__(self):
         return self.name
@@ -121,7 +115,7 @@ class Profile(models.Model):
     @property
     def bmi(self):
         try:
-            return self.weight / (self.height/100) ** 2
+            return self.weight / (self.height / 100) ** 2
         except ZeroDivisionError:
             return 0
 
@@ -132,7 +126,7 @@ class Profile(models.Model):
                 out = 66 + (13.7 * self.weight) + (5 * self.height) - (6.8 * self.age)
             else:
                 out = 655 + (9.6 * self.weight) + (1.8 * self.height) - (4.7 * self.age)
-            return out * (0.7/4 * self.activity_level + 1.2)
+            return out * (0.7 / 4 * self.activity_level + 1.2)
         except ZeroDivisionError:
             return 0
 
