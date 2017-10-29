@@ -37,7 +37,9 @@ with open('prices.csv', newline='') as csvfile:
             prices[row[0]] = {'unit': d / g, 'package': d}
 
 
-def get_price(item):
+def get_price(item: str):
+    item = item.replace('ounces', '').replace('teaspoons', '').replace('teaspoon', '').replace('dash', '') \
+        .replace('ounce', '').replace('tablespoons', '').replace('tablespoon', '').replace('oz', '').replace('cups', '').replace('cup', '')
     choices = prices.keys()
     result, confidence = process.extractOne(item, choices)
     if confidence < 70:

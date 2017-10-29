@@ -122,13 +122,20 @@ def meals(request):
 def recipe(request, recipe_id):
     r = Meal.objects.get(pk=recipe_id)
     inc = list(r.ingredients.all())
+    total_price = 0
+    package = 0
+    tkcal = 0
     for i in inc:
         p = prices.get_price(i.name)
         if p is None:
             i.price = '(Price Unavailable)'
         else:
+            total_price += p["unit"] * i.amount
+            package += p["package"]
             i.price = f'${(p["unit"] * i.amount):.2f} - ${(p["package"]):.2f} per package (Walmart)'
-    return render(request, 'nutritrack/recipe.html', {'recipe': r, 'ingredients': inc})
+        tkcal += i.nutrients.kcal
+    return render(request, 'nutritrack/recipe.html', {'recipe': r, 'ingredients': inc, 'unit': total_price,
+                                                      'pps': total_price / r.servings, 'package': package, 'tkcal': tkcal/r.servings})
 
 
 @ensure_csrf_cookie

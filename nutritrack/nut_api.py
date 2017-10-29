@@ -4,8 +4,8 @@ from .models import Nutrient
 
 
 def load_nutrition_data(query):
-    appId = "93483ede"
-    appKey = "08a82146aa79bb1e5cbb5189e8a618a9"
+    appId = "41a6f334"
+    appKey = "3b67203878da1b4426a82921a1a69432"
 
     r = requests.post('https://api.nutritionix.com/v1_1/search', data={
         "appId": appId,

@@ -11,6 +11,15 @@
 
     <p>{{ recipe.description|safe }}</p>
 
+    <p>Makes {{ recipe.servings }} servings</p>
+
+    <p>Total calories: {{ tkcal }}</p>
+
+    <p>Total cost (new packages): ${{ package|floatformat:2 }}<br>
+    Cost based on units of materials: ${{ unit|floatformat:2 }}<br>
+    Price per serving: ${{ pps|floatformat:2 }}
+    </p>
+
     <h2>Ingredients</h2>
 
     <ul>
