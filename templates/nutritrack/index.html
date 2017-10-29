@@ -156,11 +156,12 @@
         'vC' : "{{mmm.meal.nut.vC}}",
         'iron' : "{{mmm.meal.nut.iron}}",
         'calcium' : "{{mmm.meal.nut.calcium}}",
-        'time' : "{{mmm.timestamp}}"
+        'time' : "{{ mmm.timestamp|date:"U" }}"
       });
       {% endfor %}
+      console.log(data);
 
-      var parseTime = d3.timeParse("%b. %d, %Y, %I:%M %p");
+{#      var parseTime = d3.timeParse("%c");#}
 
       var margin = {top: 30, right: 30, bottom: 30, left: 30},
       width = d3.max([200,window.innerWidth/5]) - margin.left - margin.right,
@@ -188,10 +189,10 @@
       }
 
       data.forEach(function(d) {
-        time = d.time;
-        time = time.replace('a.m.', 'AM');
-        time = time.replace('p.m.', 'PM');
-        d.date = parseTime(time);
+        time = +d.time;
+        //time = time.replace('a.m.', 'AM');
+        //time = time.replace('p.m.', 'PM');
+        d.date = new Date(time*1000);
 
         d.kcal = +d.kcal;
         d.fat = +d.fat;

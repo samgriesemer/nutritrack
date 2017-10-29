@@ -39,7 +39,7 @@ def index(request):
     nut.calcium /= ratio
 
     meals = [mr.meal for mr in MealReport.objects.filter(user=request.user)]
-    mrs = MealReport.objects.filter(user=request.user)
+    mrs = list(MealReport.objects.filter(user=request.user))
     for mmm in mrs:
       mmm.meal.nut = Nutrient()
       for inc in mmm.meal.ingredients.all():
