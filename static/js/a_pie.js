@@ -1,3 +1,31 @@
+// global D3 variables
+var margin = {top: 30, right: 80, bottom: 30, left: 30},
+    width = d3.max([200,window.innerWidth/4]) - margin.left - margin.right,
+    height = 200 - margin.top - margin.bottom,
+    full_width = width + margin.left + margin.right,
+    full_height = height + margin.top + margin.bottom;
+    
+var material = ['#F44336','#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#00BCD4','#009688','#4CAF50','#8BC34A','#CDDC39','#FFEB3B','#FFC107','#FF9800','#FF5722','#795548','#9E9E9E','#607D8B','#000000'],
+    material = ['#d1e4f1', '#13466b', '#f7f00a', '#e01c49', '#facc05'],
+    //material = ['#F7F00A', '#EA638C', '#B33C86', '#190E4F', '#00000'],
+    //material = ['#d1e4f1', '#FFD23F', '#EE4266', '#540D6E'],
+    material = ['#007bff', '#e9ecef', '#212529'],
+    mat = d3.scaleOrdinal(material);
+
+var format = d3.format(',d');
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("display", "none");
+
+function mouseover() {
+    div.style("display", "inline");
+}
+
+function mouseout() {
+    div.style("display", "none");
+}
+
 (function() { // wrapper to avoid variable override between files
 var width = window.innerWidth/6 - margin.left - margin.right,
 height = 160 - margin.top - margin.bottom,
@@ -6,7 +34,7 @@ full_height = height + margin.top + margin.bottom;
 
 // generate random data
 function generate() {
-  var tags = ['Vitamin A', 'Vitamin C', 'Iron', 'Calcium'];
+  var tags = ['Vitamin A', 'Vitamin C', 'Iron'];
   return tags.map(function(d) {
     return {
       'nutrient': d,
