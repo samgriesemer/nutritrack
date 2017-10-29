@@ -115,8 +115,7 @@ def profile(request):
 @login_required
 def meals(request):
     return render(request, 'nutritrack/meals.html',
-                  {'meals': [mr.meal for mr in MealReport.objects.filter(user=request.user)],
-                   'meals_suggest': [(x, recipes.recipes[x]) for x in recipes.get_best_recipe(request.user)[::-1][:5]]})
+                  {'meals': [mr.meal for mr in MealReport.objects.filter(user=request.user)]})
 
 
 @login_required
@@ -149,3 +148,9 @@ def register(request):
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
+@login_required
+def eat(request):
+    return render(request, 'nutritrack/eat.html',
+                  {'meals': [mr.meal for mr in MealReport.objects.filter(user=request.user, timestamp__gte=datetime.datetime.now().date())],
+                   'meals_suggest': [(x, recipes.recipes[x]) for x in recipes.get_best_recipe(request.user)[::-1][:5]]})

@@ -1,20 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Your Meals</h1>
+    <h1>Your Meal History</h1>
 
     <ul>
         {% for meal in meals %}
             <li><a href="/nutritrack/recipe/{{ meal.id }}/">{{ meal.name }}</a></li>
-        {% endfor %}
-    </ul>
-
-
-    <h1>Meals You Should Try</h1>
-
-    <ul>
-        {% for i, meal in meals_suggest %}
-            <li><a href="/nutritrack/edamam/{{ i }}/">{{ meal.recipe.label }}</a></li>
         {% endfor %}
     </ul>
 
