@@ -72,8 +72,8 @@
 
             <form>
             {% for option in options %}
-              <input type='radio' name='predictions' id='pred{{option}}' value="{{option}}">
-              <label for='pred{{option}}'></label>
+              <input type='radio' name='predictions' id="pred{{option['label']}}" value="{{option['label']}}">
+              <label for='pred{{option['label']}}'>{{ option['label']+' : '+option['confidence'] }} </label>
             {% endfor}
             </form>
             <button class="btn btn-lg btn-primary btn-block upload" type="submit">Upload</button>

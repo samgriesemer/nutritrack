@@ -35,7 +35,7 @@ def index(request):
 
 @ensure_csrf_cookie
 def splash(request):
-    return render(request, 'splash.html')\
+    return render(request, 'splash.html')
 
 @login_required
 def report(request):
