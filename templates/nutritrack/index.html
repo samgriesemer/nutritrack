@@ -65,7 +65,7 @@
             <nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item"><a class="nav-link active" href="#">Today's Nutrition Intake</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Kcal: {{ nut.kcal }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Kcal: {{ nut.kcal }} (of {{ user.profile.bmr }})</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Total fat: {{ nut.fat|floatformat }} g</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Total carbohydrates: {{ nut.carb|floatformat }} g</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">&raquo; of which sugars: {{ nut.sugar|floatformat }} g</a></li>

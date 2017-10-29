@@ -32,6 +32,11 @@ def index(request):
         for i in r.meal.ingredients.all():
             n = i.nutrients
             nut += n
+    ratio = request.user.profile.bmr / 2000
+    nut.vA *= ratio
+    nut.vC *= ratio
+    nut.iron *= ratio
+    nut.calcium *= ratio
     return render(request, 'nutritrack/index.html', {'user': request.user, 'nut': nut})
 
 
@@ -45,9 +50,12 @@ def report(request):
     if request.method == 'POST':
         if 'predictions' in request.POST:
             label = request.POST['predictions']
+            query = label
+            if label == 'pizza':
+                query = '3 slices of pizza'
             m, new = Meal.objects.get_or_create(name=label)
             if new:
-                nut = nut_api.load_nutrition_data(label)
+                nut = nut_api.load_nutrition_data(query)
                 i = Ingredient(name=label, amount=1, nutrients=nut)
                 i.save()
                 m.ingredients.add(i)
