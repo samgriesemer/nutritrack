@@ -54,11 +54,11 @@ class CaffePredict(object):
         output = {'prediction': {'label': self.labels[prediction], 'confidence': pred_probas[0][prediction]},
                   'top5': []}
         k = 0
-        for i, val in sorted(enumerate(pred_probas[0]), key=lambda x: x[1]):
+        for i, val in sorted(enumerate(pred_probas[0]), key=lambda x: -x[1]):
             # print(f'{val*100:2.2f}%\t\t{labels[i]}\t')
-            output['top5'].append({'label': self.labels[i], 'confidence': val})
+            output['top5'].append({'label': self.labels[i], 'confidence': val, 'slug': self.labels[i].replace(' ', '-')})
             k += 1
-            if k > 5:
+            if k >= 5:
                 break
         return output
 

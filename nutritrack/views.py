@@ -1,3 +1,5 @@
+import datetime
+
 import cv2
 from django.conf.urls import url
 from django.contrib import messages
@@ -25,7 +27,7 @@ def index(request):
     nut.vC = 0
     nut.iron = 0
     nut.calcium = 0
-    mr = MealReport.objects.filter(user=request.user)
+    mr = MealReport.objects.filter(user=request.user, timestamp__gte=datetime.datetime.now().date())
     for r in list(mr):
         for i in r.meal.ingredients.all():
             n = i.nutrients
@@ -37,18 +39,12 @@ def index(request):
 def splash(request):
     return render(request, 'splash.html')
 
+
 @login_required
 def report(request):
     if request.method == 'POST':
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            image = request.FILES['file']
-            with open('/tmp/image' + image.name, 'wb+') as destination:
-                for chunk in image.chunks():
-                    destination.write(chunk)
-            opencvImage = cv2.imread('/tmp/image' + image.name)
-            pred = predict.client.predict_image(opencvImage)
-            label = pred['prediction']['label']
+        if 'predictions' in request.POST:
+            label = request.POST['predictions']
             m, new = Meal.objects.get_or_create(name=label)
             if new:
                 nut = nut_api.load_nutrition_data(label)
@@ -58,9 +54,18 @@ def report(request):
                 m.save()
             mr = MealReport(user=request.user, meal=m)
             mr.save()
+            return redirect('/nutritrack/meals/')
+
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            image = request.FILES['file']
+            with open('/tmp/image' + image.name, 'wb+') as destination:
+                for chunk in image.chunks():
+                    destination.write(chunk)
+            opencvImage = cv2.imread('/tmp/image' + image.name)
+            pred = predict.client.predict_image(opencvImage)
 
             return render(request, 'nutritrack/predict.html', {'options': pred['top5']})
-            #return redirect('/nutritrack/meals/')
     else:
         form = UploadFileForm()
     return render(request, 'nutritrack/form.html', {'form': form})
