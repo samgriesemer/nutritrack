@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from nutritrack import predict, nut_api, prices
+from nutritrack import predict, nut_api, prices, recipes
 from nutritrack.forms import UploadFileForm, RegistrationForm, ProfileForm
 from nutritrack.models import MealReport, Nutrient, Ingredient, Meal
 
@@ -80,6 +80,12 @@ def report(request):
 
 
 @login_required
+def edamam(request, id):
+    meal = recipes.import_recipe(recipes.recipes[int(id)])
+    return redirect('/nutritrack/recipe/' + str(meal.id))
+
+
+@login_required
 def profile(request):
     if request.method == 'POST':
         form = ProfileForm(request.POST)
@@ -99,7 +105,9 @@ def profile(request):
 
 @login_required
 def meals(request):
-    return render(request, 'nutritrack/meals.html', {'meals': [mr.meal for mr in MealReport.objects.filter(user=request.user)]})
+    return render(request, 'nutritrack/meals.html',
+                  {'meals': [mr.meal for mr in MealReport.objects.filter(user=request.user)],
+                   'meals_suggest': [(x, recipes.recipes[x]) for x in recipes.get_best_recipe(request.user)[::-1][:5]]})
 
 
 @login_required

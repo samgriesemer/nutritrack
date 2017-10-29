@@ -3,13 +3,19 @@
 {% block content %}
     <h1>Recipe: {{ recipe.name }}</h1>
 
-    <p>{{ recipe.description }}</p>
+    <form method="post" action="{% url 'report' %}">
+        {% csrf_token %}
+        <input type="hidden" name="predictions" value="{{ recipe.name }}">
+        <button class="btn btn-lg btn-primary btn-block" type="submit">I Ate This Today</button>
+    </form>
+
+    <p>{{ recipe.description|safe }}</p>
 
     <h2>Ingredients</h2>
 
     <ul>
         {% for i in ingredients %}
-            <li>{{ i.amount }} g - {{ i.name }} - {{ i.price }}</li>
+            <li>{{ i.amount|floatformat }} g - {{ i.name }} - {{ i.price }}</li>
         {% endfor %}
     </ul>
 

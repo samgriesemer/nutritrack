@@ -14,6 +14,10 @@ def load_nutrition_data(query):
     }).json()
 
     # parsed_r = json.loads(r.text)
+    if 'hits' not in r.keys():
+        print(r)
+        return None
+
     query_id = r['hits'][0]['_id']
 
     nut_r = requests.get(f'https://api.nutritionix.com/v1_1/item?id={query_id}&appId={appId}&appKey={appKey}').json()

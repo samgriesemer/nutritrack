@@ -39,19 +39,8 @@ with open('prices.csv', newline='') as csvfile:
 
 def get_price(item):
     choices = prices.keys()
-    arr = process.extract(item, choices, limit=5)
-    result = None
-    for r, confidence in arr:
-        good = True
-        if confidence < 70:
-            continue
-        for word in item.split(' '):
-            if word.lower() not in r.lower():
-                good = False
-        if good:
-            result = r
-            break
-    if result is None:
+    result, confidence = process.extractOne(item, choices)
+    if confidence < 70:
         return None
 
     o = prices[result]
