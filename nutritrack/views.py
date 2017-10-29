@@ -31,6 +31,7 @@ def index(request):
     for r in list(mr):
         for i in r.meal.ingredients.all():
             n = i.nutrients
+            n *= (r.amount / r.meal.servings)
             nut += n
     ratio = request.user.profile.bmr / 2000
     nut.vA /= ratio

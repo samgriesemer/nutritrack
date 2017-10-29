@@ -33,6 +33,31 @@ class Nutrient(models.Model):
         self.calcium += other.calcium
         return self
 
+    def __mul__(self, other):
+        if isinstance(other, self.__class__):
+            self.kcal *= other.kcal
+            self.fat *= other.fat
+            self.carb *= other.carb
+            self.sugar *= other.sugar
+            self.protein *= other.protein
+            self.sodium *= other.sodium
+            self.vA *= other.vA
+            self.vC *= other.vC
+            self.iron *= other.iron
+            self.calcium *= other.calcium
+        else:
+            self.kcal *= other
+            self.fat *= other
+            self.carb *= other
+            self.sugar *= other
+            self.protein *= other
+            self.sodium *= other
+            self.vA *= other
+            self.vC *= other
+            self.iron *= other
+            self.calcium *= other
+        return self
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=256, default='')
@@ -55,6 +80,7 @@ class Meal(models.Model):
     name = models.CharField(max_length=256, default='')
     description = models.TextField(default='')
     ingredients = models.ManyToManyField(Ingredient)
+    servings = models.FloatField(default=1)
 
     def __str__(self):
         return self.name
@@ -64,6 +90,7 @@ class MealReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(auto_now=True)
     meal = models.ForeignKey(Meal)
+    amount = models.FloatField(default=1)
 
     def __str__(self):
         return f'{self.timestamp} - {self.user.username} - {self.meal.name}'
@@ -85,10 +112,10 @@ SEX_CHOICES = (
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    age = models.IntegerField(blank=True, default=0)
+    age = models.IntegerField(blank=True, default=18)
     sex = models.IntegerField(choices=SEX_CHOICES, default=0)
-    height = models.FloatField(blank=True, default=0)
-    weight = models.FloatField(blank=True, default=0)
+    height = models.FloatField(blank=True, default=170)
+    weight = models.FloatField(blank=True, default=60)
     activity_level = models.IntegerField(choices=ACTIVITY_CHOICES, default=0)
 
     @property

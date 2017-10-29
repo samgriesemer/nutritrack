@@ -12,6 +12,7 @@ def import_recipe(recipe):
     if created:
         print(f"Importing {recipe['recipe']['label']}")
         meal.description = f"<a href='{recipe['recipe']['url']}'>{recipe['recipe']['label']}</a>"
+        meal.servings = recipe['recipe']['yield']
         for ing in recipe['recipe']['ingredients']:
             nut = nut_api.load_nutrition_data(f"{ing['weight']} g {ing['text']}")
             if nut is None:
