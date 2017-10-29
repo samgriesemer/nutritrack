@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Nutrient(models.Model):
@@ -67,3 +69,54 @@ class MealReport(models.Model):
     def __str__(self):
         return f'{self.timestamp} - {self.user.username} - {self.meal.name}'
 
+
+ACTIVITY_CHOICES = (
+    (0, 'sedentary'),
+    (1, 'lightly active'),
+    (2, 'moderately active'),
+    (3, 'pretty active'),
+    (4, 'extraordinarily active'),
+)
+
+SEX_CHOICES = (
+    (0, 'male'),
+    (1, 'female')
+)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    age = models.IntegerField(blank=True, default=0)
+    sex = models.IntegerField(choices=SEX_CHOICES, default=0)
+    height = models.FloatField(blank=True, default=0)
+    weight = models.FloatField(blank=True, default=0)
+    activity_level = models.IntegerField(choices=ACTIVITY_CHOICES, default=0)
+
+    @property
+    def bmi(self):
+        try:
+            return self.weight / (self.height/100) ** 2
+        except ZeroDivisionError:
+            return 0
+
+    @property
+    def bmr(self):
+        try:
+            if self.sex == 0:
+                out = 66 + (13.7 * self.weight) + (5 * self.height) - (6.8 * self.age)
+            else:
+                out = 655 + (9.6 * self.weight) + (1.8 * self.height) - (4.7 * self.age)
+            return out * (0.7/4 * self.activity_level + 1.2)
+        except ZeroDivisionError:
+            return 0
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()

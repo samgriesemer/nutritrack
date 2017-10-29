@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 from nutritrack import predict, nut_api, prices
-from nutritrack.forms import UploadFileForm, RegistrationForm
+from nutritrack.forms import UploadFileForm, RegistrationForm, ProfileForm
 from nutritrack.models import MealReport, Nutrient, Ingredient, Meal
 
 
@@ -73,7 +73,20 @@ def report(request):
 
 @login_required
 def profile(request):
-    return redirect('/nutritrack/')
+    if request.method == 'POST':
+        form = ProfileForm(request.POST)
+        if form.is_valid():
+            request.user.profile.age = form.cleaned_data['age']
+            request.user.profile.height = form.cleaned_data['height']
+            request.user.profile.weight = form.cleaned_data['weight']
+            request.user.profile.sex = form.cleaned_data['sex']
+            request.user.profile.activity_level = form.cleaned_data['activity_level']
+            request.user.save()
+            messages.info(request, 'Your information has been saved.')
+            return render(request, 'registration/profile.html', {'profile': request.user.profile, 'form': form})
+    else:
+        form = ProfileForm()
+    return render(request, 'registration/profile.html', {'profile': request.user.profile, 'form': form})
 
 
 @login_required

@@ -44,6 +44,9 @@
                 <a class="nav-link" href="/nutritrack/">Dashboard</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="/accounts/profile/">Profile</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/admin/">Admin</a>
             </li>
         </ul>
@@ -52,6 +55,13 @@
 
     </div>
 </nav>
+
+{% if messages %}
+{% for message in messages %}
+<div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %} role="alert">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
 
 {% block body %}
 <main role="main" class="container">

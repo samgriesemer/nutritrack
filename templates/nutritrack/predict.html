@@ -52,50 +52,24 @@
 {% block body %}
     <div class="container">
 
-        <form class="form-signin" enctype="multipart/form-data" method="post" action="">
-            <h2 class="form-signin-heading">Select Correct Prediction</h2>
-            {#            <form>#}
-            {#            <div class="btn-group" data-toggle="buttons">#}
-            {#  <label class="btn btn-primary active">#}
-            {#    <input type="radio" name="options" id="option1" autocomplete="off" checked> Radio 1 (preselected)#}
-            {#  </label>#}
-            {#  <label class="btn btn-primary">#}
-            {#    <input type="radio" name="options" id="option2" autocomplete="off"> Radio 2#}
-            {#  </label>#}
-            {#  <label class="btn btn-primary">#}
-            {#    <input type="radio" name="options" id="option3" autocomplete="off"> Radio 3#}
-            {#  </label>#}
-
-            {% for option in options %}
-                <form class="form-signin" method="post" action="">
-                    {% csrf_token %}
-                    <input type="hidden" name="predictions" value="{{ option.label }}">
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">{{ option.label }}
-                        : {{ option.confidence }}</button>
-                </form>
-
-                {#                  <label class="btn btn-primary">#}
-                {#    <input type="radio" name="predictions" id="pred{{ option.slug }}" autocomplete="off"> {{ option.label }} : {{ option.confidence }}#}
-                {#  </label>#}
-
-                {#                <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>#}
-                {#                <div>#}
-                {#                <label for='pred{{option.slug}}'>{{ option.label }} : {{ option.confidence }} </label>#}
-                {#                <input type='radio' name='predictions' id="pred{{option.slug}}" value="{{option.label}}">#}
-                {#                </div>#}
-            {% endfor %}
+        <h2 class="form-signin-heading">Select Correct Prediction</h2>
+        {% for option in options %}
             <form class="form-signin" method="post" action="">
                 {% csrf_token %}
-                <label for="pred" class="sr-only">Other Food</label>
-                <input type="text" id="pred" class="form-control" placeholder="Other Food" required autofocus
-                       name="predictions">
-                <button type="submit" class="btn btn-primary btn-lg btn-block">Submit alternative food</button>
+                <input type="hidden" name="predictions" value="{{ option.label }}">
+                <button type="submit" class="btn btn-primary btn-lg btn-block">{{ option.label }}
+                    : {{ option.confidence }}</button>
             </form>
 
-            {#            </div>#}
-            {#            </form>#}
-            {#            <button class="btn btn-lg btn-primary btn-block upload" type="submit">Select choice</button>#}
+        {% endfor %}
+        <form class="form-signin" method="post" action="">
+            {% csrf_token %}
+            <label for="pred" class="sr-only">Other Food</label>
+            <input type="text" id="pred" class="form-control" placeholder="Other Food" required autofocus
+                   name="predictions">
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Submit alternative food</button>
         </form>
+
 
     </div> <!-- /container -->
 

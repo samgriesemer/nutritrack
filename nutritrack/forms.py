@@ -6,6 +6,14 @@ class UploadFileForm(forms.Form):
     file = forms.ImageField(label='Your plate of food')
 
 
+class ProfileForm(forms.Form):
+    age = forms.IntegerField()
+    height = forms.FloatField()
+    weight = forms.FloatField()
+    sex = forms.IntegerField()
+    activity_level = forms.IntegerField()
+
+
 class RegistrationForm(forms.Form):
     username = forms.RegexField(regex=r'^\w+$', widget=forms.TextInput(attrs=dict(required=True, max_length=30)),
                                 label="Username", error_messages={

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <style>
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+        }
+
+        .form-signin .form-signin-heading,
+        .form-signin .checkbox {
+            margin-bottom: 10px;
+        }
+
+        .form-signin .checkbox {
+            font-weight: normal;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .upload {
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <form class="form-signin" method="post" action="">
+            {% csrf_token %}
+            <h2 class="form-signin-heading">Edit your profile</h2>
+            {{ form.non_field_errors }}
+
+            <label for="age">Age</label>
+            <div class="input-group">
+                {{ form.age.errors }}
+                <input type="text" id="age" class="form-control" placeholder="Age" required autofocus name="age"
+                       value="{{ profile.age }}">
+                <span class="input-group-addon">years</span>
+            </div>
+
+            <label for="height">Height</label>
+            <div class="input-group">
+                {{ form.height.errors }}
+                <input type="text" id="age" class="form-control" placeholder="Height" required autofocus name="height"
+                       value="{{ profile.height }}">
+                <span class="input-group-addon">cm</span>
+            </div>
+
+            <label for="weight">Weight</label>
+            <div class="input-group">
+                {{ form.weight.errors }}
+                <input type="text" id="weight" class="form-control" placeholder="Weight" required autofocus
+                       name="weight"
+                       value="{{ profile.weight }}">
+                <span class="input-group-addon">kg</span>
+            </div>
+
+            {{ form.sex.errors }}
+            <label for="group1">Sex</label><br>
+            <div class="btn-group" data-toggle="buttons" id="group1">
+                <label class="btn btn-primary{% if profile.sex == 0 %} active{% endif %}" >
+                    <input type="radio" name="sex" id="option1" value="0" autocomplete="off" {% if profile.sex == 0 %}checked{% endif %}>Male
+                </label>
+                <label class="btn btn-primary{% if profile.sex == 1 %} active{% endif %}">
+                    <input type="radio" name="sex" id="option2" value="1" autocomplete="off" {% if profile.sex == 1 %}checked{% endif %}>Female
+                </label>
+            </div>
+            <br>
+            {{ form.activity_level.errors }}
+            <label for="group2">Activity Level</label><br>
+            <div class="btn-group" data-toggle="buttons" id="group2">
+                <label class="btn btn-primary{% if profile.activity_level == 0 %} active{% endif %}">
+                    <input type="radio" name="activity_level" id="option12" value="0" autocomplete="off" {% if profile.activity_level == 0 %}checked{% endif %}>Sedentary
+                </label>
+                <label class="btn btn-primary{% if profile.activity_level == 1 %} active{% endif %}">
+                    <input type="radio" name="activity_level" id="option22" value="1" autocomplete="off" {% if profile.activity_level == 1 %}checked{% endif %}>Light
+                </label>
+                <label class="btn btn-primary{% if profile.activity_level == 2 %} active{% endif %}">
+                    <input type="radio" name="activity_level" id="option32" value="2" autocomplete="off" {% if profile.activity_level == 2 %}checked{% endif %}>Moderate
+                </label>
+                <label class="btn btn-primary{% if profile.activity_level == 3 %} active{% endif %}">
+                    <input type="radio" name="activity_level" id="option42" value="3" autocomplete="off" {% if profile.activity_level == 3 %}checked{% endif %}>Extended
+                </label>
+                <label class="btn btn-primary{% if profile.activity_level == 4 %} active{% endif %}">
+                    <input type="radio" name="activity_level" id="option52" value="4" autocomplete="off" {% if profile.activity_level == 4 %}checked{% endif %}>Rigorous
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Update</button>
+        </form>
+
+        <p>Your BMI: {{ profile.bmi }} kg/m^2</p>
+        <p>Your BMR: {{ profile.bmr }} kcal/day</p>
+
+    </div> <!-- /container -->
+
+{% endblock %}
