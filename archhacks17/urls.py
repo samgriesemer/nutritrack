@@ -28,4 +28,5 @@ urlpatterns = [
     url(r'^accounts/login/$', login, name='login'),
     url(r'^accounts/logout/$', logout, name='logout'),
     url(r'^accounts/profile/$', views.profile, name='profile'),
+    url(r'^accounts/register/$', views.register, name='register')
 ]

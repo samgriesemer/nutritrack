@@ -52,15 +52,15 @@
                 <ul class="nav nav-pills flex-column">
                     <li class="nav-item"><a class="nav-link active" href="#">This Week's Nutrition Intake</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Kcal: {{ nut.kcal }}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Total fat: {{ nut.fat }} g</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Total carbohydrates: {{ nut.carb }} g</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">&raquo; of which sugars: {{ nut.sugar }} g</a>
+                    <li class="nav-item"><a class="nav-link" href="#">Total fat: {{ nut.fat|floatformat }} g</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Total carbohydrates: {{ nut.carb|floatformat }} g</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">&raquo; of which sugars: {{ nut.sugar|floatformat }} g</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Total sodium: {{ nut.sodium }} mg</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Vitamin A: {{ nut.vA }}%</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Vitamin C: {{ nut.vC }}%</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Iron: {{ nut.iron }}%</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Calcium: {{ nut.calcium }}%</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Total sodium: {{ nut.sodium|floatformat }} mg</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Vitamin A: {{ nut.vA|floatformat }}%</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Vitamin C: {{ nut.vC|floatformat }}%</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Iron: {{ nut.iron|floatformat }}%</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Calcium: {{ nut.calcium|floatformat }}%</a></li>
                 </ul>
                 <p style="text-align: center; text-decoration: underline;">Daily Value</p>
                 <svg id='a_pie'></svg>
