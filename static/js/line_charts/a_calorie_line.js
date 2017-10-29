@@ -14,12 +14,14 @@ function generate() {
 }
 
 // d3
+var test_template = [];
+
 var svg = d3.select("#calorie")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom),
     g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var x = d3.scaleLinear()
+var x = d3.scaleTime()
   .range([0,width]);
 
 var y = d3.scaleLinear()

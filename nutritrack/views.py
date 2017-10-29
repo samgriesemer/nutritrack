@@ -1,4 +1,5 @@
 import datetime
+import json
 
 import cv2
 from django.conf.urls import url
@@ -12,7 +13,6 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from nutritrack import predict, nut_api, prices, recipes
 from nutritrack.forms import UploadFileForm, RegistrationForm, ProfileForm
 from nutritrack.models import MealReport, Nutrient, Ingredient, Meal
-
 
 @login_required
 def index(request):
@@ -33,11 +33,19 @@ def index(request):
             n = i.nutrients
             nut += n
     ratio = request.user.profile.bmr / 2000
-    nut.vA *= ratio
-    nut.vC *= ratio
-    nut.iron *= ratio
-    nut.calcium *= ratio
-    return render(request, 'nutritrack/index.html', {'user': request.user, 'nut': nut})
+    nut.vA /= ratio
+    nut.vC /= ratio
+    nut.iron /= ratio
+    nut.calcium /= ratio
+
+    meals = [mr.meal for mr in MealReport.objects.filter(user=request.user)]
+    mrs = MealReport.objects.filter(user=request.user)
+    for mmm in mrs:
+      mmm.meal.nut = Nutrient()
+      for inc in mmm.meal.ingredients.all():
+        mmm.meal.nut += inc.nutrients
+    return render(request, 'nutritrack/index.html', {'user': request.user, 'nut': nut,
+                                                     'mrs': mrs})
 
 
 @ensure_csrf_cookie

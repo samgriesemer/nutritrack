@@ -127,4 +127,250 @@
             </main>
         </div>
     </div>
+
+    <script src="//d3js.org/d3.v4.min.js"></script>
+    <script type="text/javascript">
+      var nut = {
+        'kcal' : "{{nut.kcal}}",
+        'fat' : "{{nut.fat}}",
+        'carb' : "{{nut.carb}}",
+        'sugar' : "{{nut.sugar}}",
+        'protein' : "{{nut.protein}}",
+        'sodium' : "{{nut.sodium}}",
+        'vA' : "{{nut.vA}}",
+        'vC' : "{{nut.vC}}",
+        'iron' : "{{nut.iron}}",
+        'calcium' : "{{nut.calcium}}",
+      }
+
+      var data = [];
+      {% for mmm in mrs %}
+        data.push({
+        'kcal' : "{{mmm.meal.nut.kcal}}",
+        'fat' : "{{mmm.meal.nut.fat}}",
+        'carb' : "{{mmm.meal.nut.carb}}",
+        'sugar' : "{{mmm.meal.nut.sugar}}",
+        'protein' : "{{mmm.meal.nut.protein}}",
+        'sodium' : "{{mmm.meal.nut.sodium}}",
+        'vA' : "{{mmm.meal.nut.vA}}",
+        'vC' : "{{mmm.meal.nut.vC}}",
+        'iron' : "{{mmm.meal.nut.iron}}",
+        'calcium' : "{{mmm.meal.nut.calcium}}",
+        'time' : "{{mmm.timestamp}}"
+      });
+      {% endfor %}
+
+      var parseTime = d3.timeParse("%b. %d, %Y, %I:%M %p");
+
+      var margin = {top: 30, right: 30, bottom: 30, left: 30},
+      width = d3.max([200,window.innerWidth/5]) - margin.left - margin.right,
+      height = 200 - margin.top - margin.bottom,
+      full_width = width + margin.left + margin.right,
+      full_height = height + margin.top + margin.bottom;
+      
+      var material = ['#F44336','#E91E63','#9C27B0','#673AB7','#3F51B5','#2196F3','#03A9F4','#00BCD4','#009688','#4CAF50','#8BC34A','#CDDC39','#FFEB3B','#FFC107','#FF9800','#FF5722','#795548','#9E9E9E','#607D8B','#000000'],
+          material = ['#d1e4f1', '#13466b', '#f7f00a', '#e01c49', '#facc05'],
+          material = ['#007bff', '#e9ecef', '#212529'],
+          mat = d3.scaleOrdinal(material);
+
+      var format = d3.format(',d');
+
+      var div = d3.select("body").append("div")
+          .attr("class", "tooltip")
+          .style("display", "none");
+
+      function mouseover() {
+          div.style("display", "inline");
+      }
+
+      function mouseout() {
+          div.style("display", "none");
+      }
+
+      data.forEach(function(d) {
+        time = d.time;
+        time = time.replace('a.m.', 'AM');
+        time = time.replace('p.m.', 'PM');
+        d.date = parseTime(time);
+
+        d.kcal = +d.kcal;
+        d.fat = +d.fat;
+        d.carb = +d.carb;
+        d.sugar = +d.sugar;
+        d.protein = +d.protein;
+        d.sodium = +d.sodium;
+        d.vA = +d.vA;
+        d.vC = +d.vC;
+        d.iron = +d.iron;
+        d.calcium = +d.calcium;
+      });
+
+      // calorie line
+      (function() { // wrapper to avoid variable override between files
+
+      var svg_line = d3.select("#calorie")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom),
+          g = svg_line.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var x = d3.scaleTime()
+        .domain(d3.extent(data, function(d) { return d.date; }))
+        .range([0,width]);
+
+      var y = d3.scaleLinear()
+        .domain(d3.extent(data, function(d) { return d.kcal; }))
+        .range([height,0]);
+
+      // define line
+      var line = d3.line()
+          .defined(function(d) { return d; })
+          //.linear(d3.curveBasis)
+          .x(function(d) { return x(d.date); })
+          .y(function(d) { return y(d.kcal); });
+
+      g.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      g.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", "translate(0," + 0 + ")")
+        .call(d3.axisLeft(y));
+
+      series = g.selectAll('.series')
+        .data([data])
+        .enter().append('g')
+          .attr('class', 'series')
+
+      series.append('path')
+        .attr('class', 'line')
+        .attr('fill', 'none')
+        .attr('stroke', function(d) { return mat(d.id); })
+        .attr('stroke-width', '1.5px')
+        .attr('d', function(d) { return line(d) });
+
+
+      g.selectAll(".dot")
+        .data(data.filter(function(d) { return d; }))
+        .enter().append("circle")
+          .attr("class", "dot")
+          .attr('fill', function(d) { return mat(d.id); })
+          .attr("cx", line.x())
+          .attr("cy", line.y())
+          .attr("r", 1.5);
+      })();
+
+      // protein line
+      (function() { // wrapper to avoid variable override between files
+
+      var svg_line = d3.select("#protein")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom),
+          g = svg_line.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var x = d3.scaleTime()
+        .domain(d3.extent(data, function(d) { return d.date; }))
+        .range([0,width]);
+
+      var y = d3.scaleLinear()
+        .domain(d3.extent(data, function(d) { return d.protein; }))
+        .range([height,0]);
+
+      // define line
+      var line = d3.line()
+          .defined(function(d) { return d; })
+          //.linear(d3.curveBasis)
+          .x(function(d) { return x(d.date); })
+          .y(function(d) { return y(d.protein); });
+
+      g.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      g.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", "translate(0," + 0 + ")")
+        .call(d3.axisLeft(y));
+
+      series = g.selectAll('.series')
+        .data([data])
+        .enter().append('g')
+          .attr('class', 'series')
+
+      series.append('path')
+        .attr('class', 'line')
+        .attr('fill', 'none')
+        .attr('stroke', function(d) { return mat(d.id); })
+        .attr('stroke-width', '1.5px')
+        .attr('d', function(d) { return line(d) });
+
+
+      g.selectAll(".dot")
+        .data(data.filter(function(d) { return d; }))
+        .enter().append("circle")
+          .attr("class", "dot")
+          .attr('fill', function(d) { return mat(d.id); })
+          .attr("cx", line.x())
+          .attr("cy", line.y())
+          .attr("r", 1.5);
+      })();
+
+      // carb line
+      (function() { // wrapper to avoid variable override between files
+
+      var svg_line = d3.select("#carbs")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom),
+          g = svg_line.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      var x = d3.scaleTime()
+        .domain(d3.extent(data, function(d) { return d.date; }))
+        .range([0,width]);
+
+      var y = d3.scaleLinear()
+        .domain(d3.extent(data, function(d) { return d.carb; }))
+        .range([height,0]);
+
+      // define line
+      var line = d3.line()
+          .defined(function(d) { return d; })
+          //.linear(d3.curveBasis)
+          .x(function(d) { return x(d.date); })
+          .y(function(d) { return y(d.carb); });
+
+      g.append("g")
+        .attr("class", "x-axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+      g.append("g")
+        .attr("class", "y-axis")
+        .attr("transform", "translate(0," + 0 + ")")
+        .call(d3.axisLeft(y));
+
+      series = g.selectAll('.series')
+        .data([data])
+        .enter().append('g')
+          .attr('class', 'series')
+
+      series.append('path')
+        .attr('class', 'line')
+        .attr('fill', 'none')
+        .attr('stroke', function(d) { return mat(d.id); })
+        .attr('stroke-width', '1.5px')
+        .attr('d', function(d) { return line(d) });
+
+
+      g.selectAll(".dot")
+        .data(data.filter(function(d) { return d; }))
+        .enter().append("circle")
+          .attr("class", "dot")
+          .attr('fill', function(d) { return mat(d.id); })
+          .attr("cx", line.x())
+          .attr("cy", line.y())
+          .attr("r", 1.5);
+      })();
+    </script>
 {% endblock %}
