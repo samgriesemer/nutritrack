@@ -42,14 +42,22 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+
+        .upload {
+          margin-top: 20px;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
     <div class="container">
 
-        <form class="form-signin" method="post" action="{% url 'register' %}">
-            <h2 class="form-signin-heading">Register to join NutriTrack!</h2>
+        <form class="form-signin" enctype="multipart/form-data" method="post" action="">
+            <h2 class="form-signin-heading">Upload an image</h2>
+
+            {% if form.errors %}
+                <p>Error in uploading the image. Try again.</p>
+            {% endif %}
 
             {% if next %}
                 {% if user.is_authenticated %}
@@ -62,24 +70,13 @@
 
             {% csrf_token %}
 
-            {{ form.non_field_errors }}
-            {{ form.email.errors }}
-            <label for="ie" class="sr-only">Email</label>
-            <input type="email" id="ie" class="form-control" placeholder="E-mail" required autofocus
-                   name="email">
-            {{ form.username.errors }}
-            <label for="iu" class="sr-only">Username</label>
-            <input type="text" id="iu" class="form-control" placeholder="Username" required
-                   name="username">
-            {{ form.password1.errors }}
-            <label for="ip" class="sr-only">Password</label>
-            <input type="password" id="ip" class="form-control" placeholder="Password" required
-                   name="password1">
-            {{ form.password2.errors }}
-            <label for="ip2" class="sr-only">Password (confirm)</label>
-            <input type="password" id="ip2" class="form-control" placeholder="Password (confirm)" required
-                   name="password2">
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Register!</button>
+            <form>
+            {% for option in options %}
+              <input type='radio' name='predictions' id='pred{{option}}' value="{{option}}">
+              <label for='pred{{option}}'></label>
+            {% endfor}
+            </form>
+            <button class="btn btn-lg btn-primary btn-block upload" type="submit">Upload</button>
         </form>
 
     </div> <!-- /container -->

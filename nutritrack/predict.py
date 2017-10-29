@@ -62,5 +62,4 @@ class CaffePredict(object):
                 break
         return output
 
-
 client = CaffePredict()

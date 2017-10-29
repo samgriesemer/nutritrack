@@ -35,8 +35,7 @@ def index(request):
 
 @ensure_csrf_cookie
 def splash(request):
-    return render(request, 'splash.html')
-
+    return render(request, 'splash.html')\
 
 @login_required
 def report(request):
@@ -60,8 +59,8 @@ def report(request):
             mr = MealReport(user=request.user, meal=m)
             mr.save()
 
-            # return render(request, 'nutritrack/form.html', {'form': pred})
-            return redirect('/nutritrack/meals/')
+            return render(request, 'nutritrack/predict.html', {'options': pred['top5']})
+            #return redirect('/nutritrack/meals/')
     else:
         form = UploadFileForm()
     return render(request, 'nutritrack/form.html', {'form': form})
@@ -93,23 +92,4 @@ def register(request):
     else:
         form = RegistrationForm()
     return render(request, 'registration/register.html', {'form': form})
-
-    if request.method == 'POST':
-        # check there data
-        u = request.POST['username']
-        e = request.POST['email']
-        p = request.POST['password']
-        c = request.POST['password2']
-        if p != c:
-            return render(request, 'registration/register.html', {'error': 'Your password didn\'t match!'})
-
-        user = User.objects.create_user(u, e, p)
-        if user is None:
-            return render(request, 'registration/register.html', {'error': 'Failed to create account! Try a stronger password.'})
-        login(request, user)
-
-        messages.info(request, 'Welcome to NutriTrack!')
-        return redirect('/nutritrack/')
-    else:
-        return render(request, 'registration/register.html', {'error:': None})
 
