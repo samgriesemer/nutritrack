@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from nutritrack import predict, nut_api
+from nutritrack import predict, nut_api, prices
 from nutritrack.forms import UploadFileForm, RegistrationForm
 from nutritrack.models import MealReport, Nutrient, Ingredient, Meal
 
@@ -74,6 +74,19 @@ def profile(request):
 @login_required
 def meals(request):
     return render(request, 'nutritrack/meals.html', {'meals': [mr.meal for mr in MealReport.objects.filter(user=request.user)]})
+
+
+@login_required
+def recipe(request, recipe_id):
+    r = Meal.objects.get(pk=recipe_id)
+    inc = list(r.ingredients.all())
+    for i in inc:
+        p = prices.get_price(i.name)
+        if p is None:
+            i.price = '(Price Unavailable)'
+        else:
+            i.price = f'${(p["unit"] * i.amount):.2f} - ${(p["package"]):.2f} per package (Walmart)'
+    return render(request, 'nutritrack/recipe.html', {'recipe': r, 'ingredients': inc})
 
 
 @ensure_csrf_cookie

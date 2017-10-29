@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^nutritrack/$', views.index, name='index'),
     url(r'^nutritrack/report/$', views.report, name='report'),
     url(r'^nutritrack/meals/$', views.meals, name='meals'),
+    url(r'^nutritrack/recipe/(?P<recipe_id>[0-9]+)/$', views.recipe, name='recipe'),
     url(r'^$', views.splash, name='splash'),
     url(r'^accounts/login/$', login, name='login'),
     url(r'^accounts/logout/$', logout, name='logout'),

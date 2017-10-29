@@ -25,7 +25,7 @@ SECRET_KEY = 'so1nnruvi*o)63mai1pidcm-_(hs3mvpxoc4g-hcm%inxlj7er'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ah.connor.money', '127.0.0.1']
+ALLOWED_HOSTS = ['ah.connor.money', 'nutritrack.org', '127.0.0.1']
 
 
 # Application definition
